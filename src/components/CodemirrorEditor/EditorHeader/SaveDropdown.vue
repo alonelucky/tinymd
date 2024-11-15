@@ -48,6 +48,7 @@ document.addEventListener(`keydown`, async (e) => {
       storage.setItem(currentid, current),
       storage.setItem(key_articles, JSON.stringify(articles)),
     ])
+    localStorage.setItem(key___editor_content_id, currentid)
   }
 })
 
@@ -111,6 +112,7 @@ async function newArticle() {
     storage.setItem(key_articles, JSON.stringify(articles)),
   ])
   localStorage.setItem(key___editor_content, `## 新文章`)
+  localStorage.removeItem(key___editor_content_id)
   location.reload()
 }
 </script>
