@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-// id = ""+Date.now()+Math.random()
-// title = ""
-// date = ""
-// update = ""
+import { onMounted, reactive } from 'vue'
+
+const articles = reactive<Article[]>([])
+const key_articles = `articles`
+const key___editor_content = `__editor_content`
+const key___editor_content_id = `__editor_content_id`
+
+const storage = (window as any).localforage.config({ size: 2 ** 32 })
 
 interface Article {
   id: string
@@ -13,20 +16,22 @@ interface Article {
 }
 
 const articlemap: { [x: string]: Article } = {}
-const articles: Article[] = JSON.parse(localStorage.getItem(`articles`) || `[]`)
 
-onMounted(() => {
-  for (let i = 0; i < articles.length; i++) {
-    const v = articles[i]
+onMounted(async () => {
+  const data = (await storage.getItem(key_articles)) || []
+  articles.length = 0
+  articles.push(...data)
+  for (let i = 0; i < data.length; i++) {
+    const v = data[i]
     articlemap[v.id ?? ``] = v
   }
 })
 
-function hanldeClick(key: string) {
-  const content = localStorage.getItem(key) ?? ``
-  const current = localStorage.getItem(`__editor_content`) ?? ``
-  const currentid = localStorage.getItem(`__editor_content_id`) ?? `${Date.now()}${Math.random()}`
-  localStorage.setItem(currentid, current)
+async function hanldeClick(key: string) {
+  const content = await storage.getItem(key) ?? ``
+  const current = localStorage.getItem(key___editor_content) ?? ``
+  const currentid = (await storage.getItem(key___editor_content_id)) ?? `${Date.now()}${Math.random()}`
+  await storage.setItem(currentid, current)
   if (articlemap[currentid]) {
     articlemap[currentid].title = current.trimStart().slice(0, 30)
   }
@@ -39,16 +44,16 @@ function hanldeClick(key: string) {
     })
   }
 
-  localStorage.setItem(`articles`, JSON.stringify(articles))
-  localStorage.setItem(`__editor_content`, content)
-  localStorage.setItem(`__editor_content_id`, key)
+  await storage.setItem(key_articles, articles)
+  localStorage.setItem(key___editor_content, content)
+  await storage.setItem(key___editor_content_id, key)
   location.reload()
 }
 
-function newArticle() {
-  const current = localStorage.getItem(`__editor_content`) ?? ``
-  const currentid = localStorage.getItem(`__editor_content_id`) ?? `${Date.now()}${Math.random()}`
-  localStorage.setItem(currentid, current)
+async function newArticle() {
+  const current = localStorage.getItem(key___editor_content) ?? ``
+  const currentid = (await storage.getItem(key___editor_content_id)) ?? `${Date.now()}${Math.random()}`
+  await storage.setItem(currentid, current)
   if (articlemap[currentid]) {
     articlemap[currentid].title = current.trimStart().slice(0, 30)
   }
@@ -60,9 +65,8 @@ function newArticle() {
       update: Date.now(),
     })
   }
-  localStorage.setItem(`articles`, JSON.stringify(articles))
-  localStorage.removeItem(`__editor_content`)
-  localStorage.setItem(`__editor_content`, `## 新文章`)
+  await storage.setItem(key_articles, JSON.stringify(articles))
+  localStorage.setItem(key___editor_content, `## 新文章`)
   location.reload()
 }
 </script>
