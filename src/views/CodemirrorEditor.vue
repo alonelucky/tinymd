@@ -480,8 +480,7 @@ onMounted(() => {
 
 .container-main {
   overflow: hidden;
-  padding: 20px;
-  padding-top: 0;
+  padding: 0;
 }
 
 #output-wrapper {

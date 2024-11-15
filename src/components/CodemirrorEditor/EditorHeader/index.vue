@@ -41,8 +41,9 @@ import EditDropdown from './EditDropdown.vue'
 
 import FileDropdown from './FileDropdown.vue'
 import HelpDropdown from './HelpDropdown.vue'
-
 import PostInfo from './PostInfo.vue'
+
+import SaveDropdown from './SaveDropdown.vue'
 import StyleDropdown from './StyleDropdown.vue'
 
 const emit = defineEmits([`addFormat`, `formatContent`, `startCopy`, `endCopy`])
@@ -195,6 +196,7 @@ function customStyle() {
       </MenubarMenu>
       <EditDropdown />
       <StyleDropdown />
+      <SaveDropdown />
       <HelpDropdown />
     </Menubar>
 
