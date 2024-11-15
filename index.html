@@ -68,6 +68,51 @@
         }
       }
     </style>
+    <style>
+      /* HTML: <div class="loader"></div> */
+      .loader {
+        width: 50px;
+        aspect-ratio: 1;
+        display: grid;
+      }
+      .loader::before,
+      .loader::after {
+        content: '';
+        grid-area: 1/1;
+        --c: no-repeat radial-gradient(farthest-side, #25b09b 92%, #0000);
+        background:
+          var(--c) 50% 0,
+          var(--c) 50% 100%,
+          var(--c) 100% 50%,
+          var(--c) 0 50%;
+        background-size: 12px 12px;
+        animation: l12 1s infinite;
+      }
+      .loader::before {
+        margin: 4px;
+        filter: hue-rotate(45deg);
+        background-size: 8px 8px;
+        animation-timing-function: linear;
+      }
+      .loading-dialog {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        z-index: 999999;
+        top: 0;
+        left: 0;
+        background: #0003;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      @keyframes l12 {
+        100% {
+          transform: rotate(0.5turn);
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -79,6 +124,9 @@
         <strong>致力于让 Markdown 编辑更简单</strong>
         <p class="txt">正在加载编辑器</p>
       </div>
+    </div>
+    <div class="loading-dialog" style="display: none">
+      <div class="loader"></div>
     </div>
     <script>
       const theme = localStorage.getItem('vueuse-color-scheme')
